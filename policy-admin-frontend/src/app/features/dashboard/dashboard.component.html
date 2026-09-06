@@ -1,0 +1,76 @@
+<header class="page-head">
+  <h1>Dashboard</h1>
+  <p class="page-sub">A read of what's currently in MongoDB, from the aggregate endpoint.</p>
+</header>
+
+@if (error()) {
+  <div class="panel panel-pad notice notice--danger">
+    <p>{{ error() }}</p>
+    <button (click)="load()">Retry</button>
+  </div>
+}
+
+@if (loading()) {
+  <div class="panel panel-pad">
+    <p class="page-sub">Loading summary…</p>
+  </div>
+} @else if (!error()) {
+  <div class="metrics">
+    <div class="metric panel">
+      <p class="metric-label">Users with policies</p>
+      <p class="metric-value num">{{ totalUsers() }}</p>
+    </div>
+    <div class="metric panel">
+      <p class="metric-label">Policies</p>
+      <p class="metric-value num">{{ totalPolicies() }}</p>
+    </div>
+    <div class="metric panel">
+      <p class="metric-label">Premium total</p>
+      <p class="metric-value num">{{ totalPremium() | currency }}</p>
+    </div>
+  </div>
+
+  <div class="panel panel-pad" style="margin-top: 20px;">
+    <h2 class="section-title">Top users by premium</h2>
+    @if (topUsers().length === 0) {
+      <div class="empty-state">
+        <h3>No policies yet</h3>
+        <p>Upload a spreadsheet from Import data to populate this view.</p>
+      </div>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Policies</th>
+            <th style="text-align: right;">Premium total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of topUsers(); track u.userId) {
+            <tr>
+              <td>{{ u.firstname }}</td>
+              <td class="num">{{ u.policyCount }}</td>
+              <td class="num" style="text-align: right;">{{ u.premiumTotal | currency }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}
+
+<div class="quick-links">
+  <a routerLink="/import" class="quick-link panel">
+    <p class="quick-link-title">Import data</p>
+    <p class="quick-link-sub">Upload a CSV or XLSX file</p>
+  </a>
+  <a routerLink="/search" class="quick-link panel">
+    <p class="quick-link-title">Find a user</p>
+    <p class="quick-link-sub">Search policies by firstname</p>
+  </a>
+  <a routerLink="/schedule" class="quick-link panel">
+    <p class="quick-link-title">Scheduled messages</p>
+    <p class="quick-link-sub">Queue a message for later</p>
+  </a>
+</div>

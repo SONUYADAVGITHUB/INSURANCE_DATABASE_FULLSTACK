@@ -1,0 +1,70 @@
+<header class="page-head">
+  <h1>Import data</h1>
+  <p class="page-sub">Parses on a worker thread, dedupes references, and writes all six collections.</p>
+</header>
+
+@if (error()) {
+  <div class="panel panel-pad notice notice--danger">
+    <p>{{ error() }}</p>
+  </div>
+}
+
+<div class="panel panel-pad">
+  <div
+    class="dropzone"
+    [class.dropzone--active]="dragging()"
+    (dragover)="onDragOver($event)"
+    (dragleave)="onDragLeave()"
+    (drop)="onDrop($event)"
+  >
+    <input type="file" id="file-input" accept=".csv,.xlsx,.xls" (change)="onFileInput($event)" hidden />
+
+    @if (file()) {
+      <p class="dropzone-file num">{{ file()!.name }}</p>
+      <p class="dropzone-hint">Ready to import</p>
+    } @else {
+      <p class="dropzone-hint">Drop a .csv or .xlsx file, or</p>
+      <label for="file-input" class="dropzone-browse">choose a file</label>
+    }
+  </div>
+
+  <div class="actions">
+    <button class="primary" (click)="upload()" [disabled]="!file() || loading()">
+      {{ loading() ? 'Importing…' : 'Upload and import' }}
+    </button>
+    @if (file() && !loading()) {
+      <button (click)="reset()">Clear</button>
+    }
+  </div>
+</div>
+
+@if (summary(); as s) {
+  <div class="panel panel-pad notice--ok" style="margin-top: 20px; border: 1px solid var(--green); border-radius: var(--radius-panel);">
+    <p class="section-title" style="margin-bottom: 4px; color: var(--green-deep);">Import complete</p>
+    <p class="page-sub" style="margin-bottom: 16px;">
+      {{ s.policiesInserted }} of {{ s.totalRows }} rows written as policies ({{ s.rowsSkipped }} skipped).
+    </p>
+    <div class="metrics">
+      <div class="metric panel">
+        <p class="metric-label">Agents</p>
+        <p class="metric-value num">{{ s.agents }}</p>
+      </div>
+      <div class="metric panel">
+        <p class="metric-label">Users</p>
+        <p class="metric-value num">{{ s.users }}</p>
+      </div>
+      <div class="metric panel">
+        <p class="metric-label">Accounts</p>
+        <p class="metric-value num">{{ s.accounts }}</p>
+      </div>
+      <div class="metric panel">
+        <p class="metric-label">Categories</p>
+        <p class="metric-value num">{{ s.categories }}</p>
+      </div>
+      <div class="metric panel">
+        <p class="metric-label">Carriers</p>
+        <p class="metric-value num">{{ s.carriers }}</p>
+      </div>
+    </div>
+  </div>
+}

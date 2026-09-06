@@ -1,0 +1,25 @@
+{
+  "name": "node-assessment",
+  "version": "1.0.0",
+  "description": "Node.js technical assessment - policy data import, search, aggregation, CPU-aware supervisor and scheduled message insert.",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "supervise": "node supervisor.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.5.0",
+    "multer": "^2.0.0",
+    "pidusage": "^3.0.2",
+    "ws": "^8.18.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4"
+  }
+}

@@ -1,0 +1,23 @@
+:host {
+  display: block;
+  max-width: 780px;
+}
+
+.schedule-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.field {
+  min-width: 160px;
+}
+
+.field--full {
+  flex-basis: 100%;
+}
+
+.field label {
+  margin-bottom: 6px;
+}

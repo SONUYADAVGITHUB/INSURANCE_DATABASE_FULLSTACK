@@ -1,0 +1,77 @@
+<header class="page-head">
+  <h1>Find a user</h1>
+  <p class="page-sub">Matches firstname (case-insensitive). Email narrows an already-matched name.</p>
+</header>
+
+<div class="panel panel-pad">
+  <form (ngSubmit)="submit()" class="search-form">
+    <div class="field">
+      <label for="firstname">First name</label>
+      <input id="firstname" name="firstname" [(ngModel)]="firstname" placeholder="Alex" />
+    </div>
+    <div class="field">
+      <label for="email">Email (optional)</label>
+      <input id="email" name="email" [(ngModel)]="email" placeholder="name@example.com" />
+    </div>
+    <button class="primary" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Searching…' : 'Search' }}
+    </button>
+  </form>
+  @if (fieldError()) {
+    <p class="field-error">{{ fieldError() }}</p>
+  }
+</div>
+
+@if (error()) {
+  <div class="panel panel-pad notice notice--danger" style="margin-top: 20px;">
+    <p>{{ error() }}</p>
+  </div>
+}
+
+@if (searched() && !loading() && !error()) {
+  @if (users().length === 0) {
+    <div class="panel panel-pad empty-state" style="margin-top: 20px;">
+      <h3>No user matched that name</h3>
+      <p>Check the spelling, or try importing the spreadsheet first.</p>
+    </div>
+  } @else {
+    <div class="user-results">
+      @for (u of users(); track u._id) {
+        <div class="panel panel-pad user-card">
+          <div class="user-card-head">
+            <div>
+              <p class="user-name">{{ u.firstname }}</p>
+              <p class="page-sub">{{ u.email || 'No email on file' }} · {{ u.city }}, {{ u.state }}</p>
+            </div>
+            <span class="pill pill--ok">{{ policiesFor(u._id).length }} polic{{ policiesFor(u._id).length === 1 ? 'y' : 'ies' }}</span>
+          </div>
+
+          @if (policiesFor(u._id).length > 0) {
+            <table style="margin-top: 14px;">
+              <thead>
+                <tr>
+                  <th>Policy #</th>
+                  <th>Category</th>
+                  <th>Carrier</th>
+                  <th style="text-align: right;">Premium</th>
+                  <th style="text-align: right;">Ends</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (p of policiesFor(u._id); track p._id) {
+                  <tr>
+                    <td class="num">{{ p.policy_number }}</td>
+                    <td>{{ p.category_id?.category_name || '—' }}</td>
+                    <td>{{ p.company_id?.company_name || '—' }}</td>
+                    <td class="num" style="text-align: right;">{{ p.premium_amount | currency }}</td>
+                    <td class="num" style="text-align: right;">{{ p.policy_end_date | date: 'MMM d, y' }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          }
+        </div>
+      }
+    </div>
+  }
+}

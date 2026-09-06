@@ -1,0 +1,71 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <span class="brand-mark">P</span>
+      <div>
+        <p class="brand-name">Policy admin</p>
+        <p class="brand-sub">Task 1 console</p>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /><rect x="14" y="14" width="7" height="7" />
+        </svg>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a routerLink="/import" routerLinkActive="active" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3v12M7 8l5-5 5 5M4 21h16" />
+        </svg>
+        <span class="nav-label">Import data</span>
+      </a>
+      <a routerLink="/search" routerLinkActive="active" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="10" cy="10" r="6" /><path d="M20 20l-4.5-4.5" />
+        </svg>
+        <span class="nav-label">Find a user</span>
+      </a>
+      <a routerLink="/aggregates" routerLinkActive="active" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M4 20V10M12 20V4M20 20v-7" />
+        </svg>
+        <span class="nav-label">Aggregates</span>
+      </a>
+      <a routerLink="/schedule" routerLinkActive="active" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="8" /><path d="M12 8v4l3 2" />
+        </svg>
+        <span class="nav-label">Scheduled messages</span>
+      </a>
+      <a routerLink="/system" routerLinkActive="active" class="nav-link">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12h4l2-7 4 14 2-7h6" />
+        </svg>
+        <span class="nav-label">System</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-foot">
+      @if (liveStatus(); as s) {
+        <span
+          class="pill"
+          [class.pill--ok]="live() && s.cpuPercent < s.restartThreshold"
+          [class.pill--danger]="live() && s.cpuPercent >= s.restartThreshold"
+          [class.pill--warn]="!live()"
+        >
+          <span class="pill-dot"></span>
+          {{ live() ? (s.cpuPercent + '% CPU') : 'Reconnecting…' }}
+        </span>
+      } @else {
+        <span class="pill pill--warn"><span class="pill-dot"></span>Connecting…</span>
+      }
+      <p class="sidebar-api">{{ apiBase }}</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <router-outlet />
+  </div>
+</div>

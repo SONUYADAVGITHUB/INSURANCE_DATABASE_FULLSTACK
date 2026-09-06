@@ -1,0 +1,72 @@
+<header class="page-head">
+  <h1>System</h1>
+  <p class="page-sub">Live CPU%, pushed over WebSocket from the server's own self-monitor (services/cpuMonitor.js).</p>
+</header>
+
+<div class="panel panel-pad">
+  <div class="conn-row">
+    <span class="pill" [class.pill--ok]="live()" [class.pill--warn]="!live()">
+      <span class="pill-dot"></span>
+      {{ live() ? 'Live' : 'Reconnecting…' }}
+    </span>
+    @if (status(); as s) {
+      <span class="page-sub num">pid {{ s.pid }} · up {{ s.uptimeSeconds }}s</span>
+    }
+  </div>
+
+  @if (!status()) {
+    <p class="page-sub" style="margin-top: 16px;">Waiting for the first reading…</p>
+  } @else {
+    <div class="gauge-row">
+      <div class="gauge-value">
+        <p class="gauge-number num" [class.gauge-number--hot]="status()!.cpuPercent >= status()!.restartThreshold">
+          {{ status()!.cpuPercent }}<span class="gauge-unit">%</span>
+        </p>
+        <p class="page-sub">CPU (this process)</p>
+      </div>
+      <div class="gauge-bar-wrap">
+        <div class="gauge-bar">
+          <div
+            class="gauge-bar-fill"
+            [class.gauge-bar-fill--hot]="status()!.cpuPercent >= status()!.restartThreshold"
+            [style.width.%]="status()!.cpuPercent > 100 ? 100 : status()!.cpuPercent"
+          ></div>
+          <div class="gauge-threshold-mark" [style.left.%]="status()!.restartThreshold"></div>
+        </div>
+        <p class="page-sub">Restart threshold: {{ status()!.restartThreshold }}%</p>
+      </div>
+    </div>
+
+    @if (status()!.nearRestart) {
+      <div class="notice notice--danger" style="margin-top: 16px;">
+        <p>Sustained streak has crossed the threshold — the supervisor (if running under <code>npm run supervise</code>) will restart the server shortly.</p>
+      </div>
+    }
+
+    <div class="metrics" style="margin-top: 20px;">
+      <div class="metric panel">
+        <p class="metric-label">Sustained streak</p>
+        <p class="metric-value num">{{ status()!.sustainedStreak }} / {{ status()!.sustainedSamplesRequired }}</p>
+      </div>
+      <div class="metric panel">
+        <p class="metric-label">Uptime</p>
+        <p class="metric-value num">{{ status()!.uptimeSeconds }}s</p>
+      </div>
+      <div class="metric panel">
+        <p class="metric-label">Process ID</p>
+        <p class="metric-value num">{{ status()!.pid }}</p>
+      </div>
+    </div>
+  }
+</div>
+
+<div class="panel panel-pad" style="margin-top: 20px;">
+  <h2 class="section-title">How to read this</h2>
+  <p class="page-sub">
+    This is the server's own CPU%, self-reported over <code>ws://.../ws/system</code>.
+    It's informational only — the actual restart decision is made independently by
+    <code>supervisor.js</code>, which samples the server process from the outside via
+    <code>pidusage</code>. Run <code>npm run supervise</code> instead of <code>npm start</code>
+    on the backend to have restarts actually happen.
+  </p>
+</div>

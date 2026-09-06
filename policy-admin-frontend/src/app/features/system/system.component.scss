@@ -1,0 +1,82 @@
+:host {
+  display: block;
+  max-width: 780px;
+}
+
+.conn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.gauge-row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.gauge-value {
+  min-width: 140px;
+}
+
+.gauge-number {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--green-deep);
+  line-height: 1;
+}
+
+.gauge-number--hot {
+  color: var(--brick-deep);
+}
+
+.gauge-unit {
+  font-size: 22px;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.gauge-bar-wrap {
+  flex: 1;
+  min-width: 220px;
+}
+
+.gauge-bar {
+  position: relative;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.gauge-bar-fill {
+  height: 100%;
+  background: var(--green);
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
+.gauge-bar-fill--hot {
+  background: var(--brick);
+}
+
+.gauge-threshold-mark {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  width: 2px;
+  background: var(--ink);
+  opacity: 0.4;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  background: var(--paper);
+  padding: 1px 5px;
+  border-radius: 3px;
+}

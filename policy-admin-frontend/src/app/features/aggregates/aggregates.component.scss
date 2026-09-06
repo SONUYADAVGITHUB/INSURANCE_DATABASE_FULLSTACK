@@ -1,0 +1,43 @@
+:host {
+  display: block;
+  max-width: 920px;
+}
+
+.filter-input {
+  max-width: 280px;
+}
+
+.row-clickable {
+  cursor: pointer;
+}
+
+.row-clickable:hover td {
+  background: var(--paper);
+}
+
+.chevron {
+  width: 18px;
+  color: var(--text-muted);
+  transform: rotate(0deg);
+  transition: transform 0.12s ease;
+}
+
+.chevron--open {
+  transform: rotate(90deg);
+  color: var(--green-deep);
+}
+
+.detail-row td {
+  background: var(--paper);
+  padding: 12px 10px 14px 34px;
+}
+
+.nested-table {
+  font-size: 12.5px;
+}
+
+.nested-table th,
+.nested-table td {
+  padding: 6px 8px;
+  border-bottom-color: var(--border);
+}

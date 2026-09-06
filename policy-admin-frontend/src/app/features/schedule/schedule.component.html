@@ -1,0 +1,77 @@
+<header class="page-head">
+  <h1>Scheduled messages</h1>
+  <p class="page-sub">Day and time are treated as UTC. The message is written to MongoDB when that moment arrives.</p>
+</header>
+
+<div class="panel panel-pad">
+  <form (ngSubmit)="submit()" class="schedule-form">
+    <div class="field field--full">
+      <label for="message">Message</label>
+      <input id="message" name="message" [(ngModel)]="message" placeholder="Renewal reminder" />
+    </div>
+    <div class="field">
+      <label for="day">Day (UTC)</label>
+      <input id="day" name="day" [(ngModel)]="day" placeholder="2026-09-10" />
+    </div>
+    <div class="field">
+      <label for="time">Time (UTC, 24h)</label>
+      <input id="time" name="time" [(ngModel)]="time" placeholder="14:30" />
+    </div>
+    <button class="primary" type="submit" [disabled]="submitting()">
+      {{ submitting() ? 'Scheduling…' : 'Schedule message' }}
+    </button>
+  </form>
+  @if (fieldError()) {
+    <p class="field-error">{{ fieldError() }}</p>
+  }
+</div>
+
+@if (error()) {
+  <div class="panel panel-pad notice notice--danger" style="margin-top: 20px;">
+    <p>{{ error() }}</p>
+    <button (click)="loadJobs()">Retry</button>
+  </div>
+}
+
+<div class="panel panel-pad" style="margin-top: 20px;">
+  <h2 class="section-title">Scheduled jobs</h2>
+
+  @if (loading()) {
+    <p class="page-sub">Loading…</p>
+  } @else if (!error()) {
+    @if (jobs().length === 0) {
+      <div class="empty-state">
+        <h3>Nothing scheduled yet</h3>
+        <p>Fill in the form above to queue a message.</p>
+      </div>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Message</th>
+            <th>Scheduled for</th>
+            <th style="text-align: right;">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (j of jobs(); track j.id) {
+            <tr>
+              <td>{{ j.message || j.id }}</td>
+              <td class="num">{{ j.scheduledFor | date: 'medium' : 'UTC' }} UTC</td>
+              <td style="text-align: right;">
+                <span
+                  class="pill"
+                  [class.pill--warn]="j.status === 'pending'"
+                  [class.pill--ok]="j.status === 'inserted'"
+                  [class.pill--danger]="j.status === 'failed'"
+                >
+                  {{ j.status }}
+                </span>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</div>

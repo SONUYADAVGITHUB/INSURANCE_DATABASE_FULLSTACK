@@ -1,0 +1,82 @@
+<header class="page-head">
+  <h1>Aggregates</h1>
+  <p class="page-sub">Policy count and premium total per user, from a single $lookup + $group pipeline.</p>
+</header>
+
+@if (error()) {
+  <div class="panel panel-pad notice notice--danger">
+    <p>{{ error() }}</p>
+    <button (click)="load()">Retry</button>
+  </div>
+}
+
+@if (loading()) {
+  <div class="panel panel-pad">
+    <p class="page-sub">Loading…</p>
+  </div>
+} @else if (!error()) {
+  <div class="panel panel-pad">
+    <input
+      class="filter-input"
+      placeholder="Filter by first name"
+      [ngModel]="filter()"
+      (ngModelChange)="filter.set($event)"
+    />
+
+    @if (filtered().length === 0) {
+      <div class="empty-state">
+        <h3>Nothing to show</h3>
+        <p>No users match that filter, or nothing has been imported yet.</p>
+      </div>
+    } @else {
+      <table style="margin-top: 14px;">
+        <thead>
+          <tr>
+            <th></th>
+            <th>User</th>
+            <th class="num" style="text-align: right;">Policies</th>
+            <th class="num" style="text-align: right;">Premium total</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of filtered(); track u.userId) {
+            <tr class="row-clickable" (click)="toggle(u.userId)">
+              <td class="chevron" [class.chevron--open]="isExpanded(u.userId)">›</td>
+              <td>{{ u.firstname }}</td>
+              <td class="num" style="text-align: right;">{{ u.policyCount }}</td>
+              <td class="num" style="text-align: right;">{{ u.premiumTotal | currency }}</td>
+            </tr>
+            @if (isExpanded(u.userId)) {
+              <tr class="detail-row">
+                <td colspan="4">
+                  <table class="nested-table">
+                    <thead>
+                      <tr>
+                        <th>Policy #</th>
+                        <th>Category</th>
+                        <th>Carrier</th>
+                        <th style="text-align: right;">Premium</th>
+                        <th style="text-align: right;">Ends</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (p of u.policies; track p.policy_number) {
+                        <tr>
+                          <td class="num">{{ p.policy_number }}</td>
+                          <td>{{ p.category || '—' }}</td>
+                          <td>{{ p.carrier || '—' }}</td>
+                          <td class="num" style="text-align: right;">{{ p.premium_amount | currency }}</td>
+                          <td class="num" style="text-align: right;">{{ p.policy_end_date | date: 'MMM d, y' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}

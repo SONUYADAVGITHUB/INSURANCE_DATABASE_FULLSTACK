@@ -1,0 +1,347 @@
+:root {
+  --ink: #16213e;
+  --paper: #f5f6f2;
+  --panel: #ffffff;
+  --border: #dfe2d8;
+  --border-strong: #c7cbbd;
+  --text-secondary: #5c6270;
+  --text-muted: #8b909c;
+
+  --green: #2f6f52;
+  --green-deep: #1f4e3a;
+  --green-tint: #e6f1ea;
+
+  --brass: #b8863a;
+  --brass-deep: #7a5722;
+  --brass-tint: #f7eedc;
+
+  --brick: #a23b2e;
+  --brick-deep: #6e2921;
+  --brick-tint: #f8e8e6;
+
+  --font-head: 'Spectral', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius-control: 6px;
+  --radius-panel: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--green-deep);
+}
+
+/* numeric / identifier data gets the mono treatment throughout the app */
+.num,
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel);
+}
+
+.panel-pad {
+  padding: 20px 24px;
+}
+
+label {
+  display: block;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 6px;
+}
+
+input,
+select {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-control);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  outline: none;
+  transition: border-color 0.12s ease;
+}
+
+input::placeholder {
+  color: var(--text-muted);
+}
+
+input:focus,
+select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px var(--green-tint);
+}
+
+button {
+  font-family: var(--font-body);
+  font-size: 13.5px;
+  font-weight: 500;
+  height: 36px;
+  padding: 0 16px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--border-strong);
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+
+button:hover {
+  background: var(--paper);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--brass);
+  border-color: var(--brass);
+  color: #ffffff;
+}
+
+button.primary:hover {
+  background: var(--brass-deep);
+  border-color: var(--brass-deep);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-secondary);
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border-strong);
+  white-space: nowrap;
+}
+
+td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.pill--ok {
+  background: var(--green-tint);
+  color: var(--green-deep);
+}
+
+.pill--warn {
+  background: var(--brass-tint);
+  color: var(--brass-deep);
+}
+
+.pill--danger {
+  background: var(--brick-tint);
+  color: var(--brick-deep);
+}
+
+.pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.field-error {
+  color: var(--brick-deep);
+  font-size: 12.5px;
+  margin-top: 6px;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+  color: var(--ink);
+}
+
+.empty-state p {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* shared page-level layout patterns, reused across every feature screen */
+
+.page-head {
+  margin-bottom: 24px;
+}
+
+.page-head h1 {
+  font-size: 22px;
+}
+
+.page-sub {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  margin-bottom: 14px;
+}
+
+.notice {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.notice p {
+  font-size: 13.5px;
+}
+
+.notice--danger {
+  border-color: var(--brick);
+  background: var(--brick-tint);
+}
+
+.notice--danger p {
+  color: var(--brick-deep);
+}
+
+.notice--ok {
+  border-color: var(--green);
+  background: var(--green-tint);
+}
+
+.notice--ok p {
+  color: var(--green-deep);
+}
+
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+}
+
+.metric {
+  padding: 18px 20px;
+}
+
+.metric-label {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+.metric-value {
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.quick-links {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.quick-link {
+  padding: 16px 18px;
+  text-decoration: none;
+  display: block;
+  transition: border-color 0.12s ease;
+}
+
+.quick-link:hover {
+  border-color: var(--border-strong);
+}
+
+.quick-link-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.quick-link-sub {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
