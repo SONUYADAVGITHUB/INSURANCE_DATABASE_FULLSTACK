@@ -3,6 +3,52 @@
   <p class="page-sub">A read of what's currently in MongoDB, from the aggregate endpoint.</p>
 </header>
 
+<div class="panel panel-pad" style="margin-bottom: 20px;">
+  <div class="cpu-head">
+    <div class="conn-row">
+      <span class="pill" [class.pill--ok]="cpuLive()" [class.pill--warn]="!cpuLive()">
+        <span class="pill-dot"></span>
+        {{ cpuLive() ? 'Live' : 'Reconnecting…' }}
+      </span>
+      <span>🟢 💻 CPU Load:</span>
+    </div>
+    <a routerLink="/system" class="cpu-detail-link">Full detail →</a>
+  </div>
+
+  @if (cpuStatus(); as s) {
+    <div class="cpu-row">
+      <div class="cpu-stat">
+        <p class="cpu-number num" [class.cpu-number--hot]="s.cpuPercent >= s.restartThreshold">
+          {{ s.cpuPercent }}<span class="cpu-unit">%</span>
+        </p>
+        <p class="page-sub">Current</p>
+      </div>
+      <div class="cpu-stat">
+        <p class="cpu-number num cpu-number--peak">
+          {{ cpuPeak() }}<span class="cpu-unit">%</span>
+        </p>
+        <p class="page-sub">
+          Peak this session
+          <button class="link-btn" (click)="resetPeak()">reset</button>
+        </p>
+      </div>
+      <div class="cpu-bar-wrap">
+        <div class="cpu-bar">
+          <div
+            class="cpu-bar-fill"
+            [class.cpu-bar-fill--hot]="s.cpuPercent >= s.restartThreshold"
+            [style.width.%]="s.cpuPercent > 100 ? 100 : s.cpuPercent"
+          ></div>
+          <div class="cpu-threshold-mark" [style.left.%]="s.restartThreshold"></div>
+        </div>
+        <p class="page-sub">Restart threshold: {{ s.restartThreshold }}%</p>
+      </div>
+    </div>
+  } @else {
+    <p class="page-sub" style="margin-top: 14px;">Waiting for the first reading…</p>
+  }
+</div>
+
 @if (error()) {
   <div class="panel panel-pad notice notice--danger">
     <p>{{ error() }}</p>

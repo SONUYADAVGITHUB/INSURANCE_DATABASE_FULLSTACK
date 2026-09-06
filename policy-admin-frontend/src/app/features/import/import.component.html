@@ -3,6 +3,49 @@
   <p class="page-sub">Parses on a worker thread, dedupes references, and writes all six collections.</p>
 </header>
 
+<div class="panel panel-pad" style="margin-bottom: 20px;">
+  <div class="cpu-head">
+    <div class="conn-row">
+      <span class="pill" [class.pill--ok]="cpuLive()" [class.pill--warn]="!cpuLive()">
+        <span class="pill-dot"></span>
+        {{ cpuLive() ? 'Live' : 'Reconnecting…' }}
+      </span>
+      <p class="page-sub">Peak resets the moment you click upload, below.</p>
+    </div>
+    <a routerLink="/system" class="cpu-detail-link">Full detail →</a>
+  </div>
+
+  @if (cpuStatus(); as s) {
+    <div class="cpu-row">
+      <div class="cpu-stat">
+        <p class="cpu-number num" [class.cpu-number--hot]="s.cpuPercent >= s.restartThreshold">
+          {{ s.cpuPercent }}<span class="cpu-unit">%</span>
+        </p>
+        <p class="page-sub">Current</p>
+      </div>
+      <div class="cpu-stat">
+        <p class="cpu-number num cpu-number--peak">
+          {{ cpuPeak() }}<span class="cpu-unit">%</span>
+        </p>
+        <p class="page-sub">Peak this upload</p>
+      </div>
+      <div class="cpu-bar-wrap">
+        <div class="cpu-bar">
+          <div
+            class="cpu-bar-fill"
+            [class.cpu-bar-fill--hot]="s.cpuPercent >= s.restartThreshold"
+            [style.width.%]="s.cpuPercent > 100 ? 100 : s.cpuPercent"
+          ></div>
+          <div class="cpu-threshold-mark" [style.left.%]="s.restartThreshold"></div>
+        </div>
+        <p class="page-sub">Restart threshold: {{ s.restartThreshold }}%</p>
+      </div>
+    </div>
+  } @else {
+    <p class="page-sub" style="margin-top: 14px;">Waiting for the first reading…</p>
+  }
+</div>
+
 @if (error()) {
   <div class="panel panel-pad notice notice--danger">
     <p>{{ error() }}</p>
@@ -43,6 +86,7 @@
     <p class="section-title" style="margin-bottom: 4px; color: var(--green-deep);">Import complete</p>
     <p class="page-sub" style="margin-bottom: 16px;">
       {{ s.policiesInserted }} of {{ s.totalRows }} rows written as policies ({{ s.rowsSkipped }} skipped).
+      Peak CPU during this import: <span class="num">{{ cpuPeak() }}%</span>.
     </p>
     <div class="metrics">
       <div class="metric panel">

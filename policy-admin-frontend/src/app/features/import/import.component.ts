@@ -1,23 +1,52 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { PolicyService } from '../../core/services/policy.service';
-import { UploadSummary } from '../../core/models/policy.model';
+import { SystemService } from '../../core/services/system.service';
+import { UploadSummary, SystemStatus } from '../../core/models/policy.model';
+
+const STALE_AFTER_MS = 8000;
 
 @Component({
   selector: 'app-import',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './import.component.html',
   styleUrl: './import.component.scss'
 })
 export class ImportComponent {
   private policyService = inject(PolicyService);
+  private systemService = inject(SystemService);
+  private destroyRef = inject(DestroyRef);
+  private staleTimer: ReturnType<typeof setTimeout> | null = null;
 
   file = signal<File | null>(null);
   dragging = signal(false);
   loading = signal(false);
   error = signal<string | null>(null);
   summary = signal<UploadSummary | null>(null);
+
+  // --- live CPU, so the spike from THIS upload is visible in real time ---
+  cpuStatus = signal<SystemStatus | null>(null);
+  cpuLive = signal(false);
+  cpuPeak = signal(0);
+
+  constructor() {
+    this.systemService
+      .liveStatus$()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((s) => {
+        this.cpuStatus.set(s);
+        this.cpuLive.set(true);
+        if (s.cpuPercent > this.cpuPeak()) this.cpuPeak.set(s.cpuPercent);
+        this.resetStaleTimer();
+      });
+
+    this.destroyRef.onDestroy(() => {
+      if (this.staleTimer) clearTimeout(this.staleTimer);
+    });
+  }
 
   onFileInput(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -67,6 +96,9 @@ export class ImportComponent {
     this.loading.set(true);
     this.error.set(null);
     this.summary.set(null);
+    // Reset the peak right as the upload starts, so what's shown once it
+    // finishes reflects THIS upload's CPU spike, not an earlier one.
+    this.cpuPeak.set(this.cpuStatus()?.cpuPercent ?? 0);
 
     this.policyService.upload(current).subscribe({
       next: (res) => {
@@ -84,5 +116,10 @@ export class ImportComponent {
     this.file.set(null);
     this.summary.set(null);
     this.error.set(null);
+  }
+
+  private resetStaleTimer(): void {
+    if (this.staleTimer) clearTimeout(this.staleTimer);
+    this.staleTimer = setTimeout(() => this.cpuLive.set(false), STALE_AFTER_MS);
   }
 }
